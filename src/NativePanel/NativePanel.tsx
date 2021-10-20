@@ -217,6 +217,7 @@ export interface NativePanelParams {
     defaultText: string;
     render?: (props: NativePanelProps) => void;
     tabIndex?: number;
+    hideNativePanel?: boolean;
 }
 
 interface NativePanelProps extends NativePanelParams {
@@ -232,7 +233,7 @@ interface NativePanelProps extends NativePanelParams {
     onSubscribeHypotesis: (cb: (hypotesis: string, last: boolean) => void) => () => void;
 }
 
-export const NativePanel: React.FC<NativePanelProps> = ({
+export const NativePanel: React.FC<Omit<NativePanelProps, 'hideNativePanel'>> = ({
     defaultText,
     sendServerAction,
     sendText,
@@ -365,5 +366,9 @@ export const renderNativePanel = (props: NativePanelProps) => {
         document.body.appendChild(div);
     }
 
-    render(<NativePanel {...props} />, div);
+    if (props.hideNativePanel) {
+        render(<></>, div);
+    } else {
+        render(<NativePanel {...props} />, div);
+    }
 };
