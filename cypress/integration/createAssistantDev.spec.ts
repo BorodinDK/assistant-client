@@ -23,6 +23,7 @@ describe('Проверяем createAssistantDev', () => {
     const SURFACE = 'TEST_SURFACE';
     const INIT_PHRASE = 'RUN TEST APP';
     let server: undefined | Server;
+    const logs = [];
 
     beforeEach(() => {
         cy.stub(window, 'WebSocket').callsFake((url) => new WebSocket(url));
@@ -196,6 +197,7 @@ describe('Проверяем createAssistantDev', () => {
 
             socket.on('message', (mes) => {
                 const message = Message.decode((mes as Uint8Array).slice(4));
+                logs.push(message);
                 if (message.systemMessage?.data && message.systemMessage?.data !== '{}') {
                     const data: SystemMessageDataType = JSON.parse(message.systemMessage.data);
                     const { app_info, server_action, meta } = data;
@@ -448,4 +450,6 @@ describe('Проверяем createAssistantDev', () => {
             done();
         }, 100);
     });
+
+    console.log(logs);
 });
